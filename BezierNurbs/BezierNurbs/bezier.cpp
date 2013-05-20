@@ -29,7 +29,6 @@ double distMax(const vector<vertex> & points){
 vector<vertex> deCastljau(const vector<vertex> & controlPoints, double epsilon){
 
 	double dist=distMax(controlPoints);
-	cout << dist << " ";
 
 	if(dist < epsilon)
 		return controlPoints;

@@ -7,13 +7,22 @@
 
 using namespace std;
 
-vector<vertex> bezierControlPoints;
+vector<vertex> controlPoints;
+vector<vertex> bezierPoints;
+
+vertex * selectedControlPoint;
 
 int windowHeight;
 int windowWidth;
 
+double maxDistance;
+
 bool shouldShowEdges;
 bool shouldShowPoints;
+
+bool shouldShowBezierCurve;
+
+bool hasSelectedVertex;
 
 void drawPoint(const vertex & v){
 	glBegin(GL_POINT);
@@ -48,7 +57,26 @@ void drawSegments(const vector<vertex> & points, float r, float g, float b){
 }
 
 void resetContext(){
-	bezierControlPoints = vector<vertex>();
+	shouldShowPoints = true;
+	shouldShowEdges = false;
+	shouldShowBezierCurve = false;
+
+	controlPoints = vector<vertex>();
+}
+
+vertex * getSelectedControlPoint(int x, int y){
+	int xMin = x - 5;
+	int xMax = x + 5;
+	int yMin = y - 5;
+	int yMax = y + 5;
+
+	for (unsigned int i=0; i<controlPoints.size(); i++){
+		vertex & v = controlPoints[i];
+		if (v.x < xMax && v.x > xMin && v.y < yMax && v.y > yMin)
+			return &v;
+	}
+
+	return NULL;
 }
 
 void affichage(){
@@ -56,10 +84,15 @@ void affichage(){
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	if (shouldShowPoints)
-		drawPoints(bezierControlPoints, 1.0f, 0.0f, 0.0f);
+		drawPoints(controlPoints, 1.0f, 0.0f, 0.0f);
 
 	if (shouldShowEdges)
-		drawSegments(bezierControlPoints, 0.0f, 1.0f, 0.0f);
+		drawSegments(controlPoints, 0.0f, 1.0f, 0.0f);
+
+	if (shouldShowBezierCurve){
+		bezierPoints = deCastljau(controlPoints, maxDistance);
+		drawSegments(bezierPoints, 0.0f, 0.0f, 1.0f);
+	}
 
 	// On force l'affichage du résultat
 	glFlush();
@@ -67,14 +100,29 @@ void affichage(){
 
 void mouse(int button,int state,int x,int y)
 {
-	// Si on appuie sur le bouton de gauche
+	// Si on appuie sur le bouton gauche
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		bezierControlPoints.push_back(vertex(x, windowWidth - y));
+		controlPoints.push_back(vertex(x, windowWidth - y));
 
 		affichage();
 	}
 
+	// Si on appuie sur le bouton droit
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+	{
+		if (selectedControlPoint == NULL)
+			selectedControlPoint = getSelectedControlPoint(x, windowWidth - y);
+	}
+
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP){
+		if (selectedControlPoint != NULL){
+			selectedControlPoint->x = x;
+			selectedControlPoint->y = windowWidth - y;
+			affichage();
+		}
+		selectedControlPoint = NULL;
+	}
 }
 
 /* Evènement du clavier */
@@ -90,9 +138,8 @@ void clavier(unsigned char touche,int x,int y){
 		affichage();
 		break;
 	case 'b':
-		bezierPoints = deCastljau(bezierControlPoints, 100);
-		drawSegments(bezierPoints, 1.0f, 1.0f, 1.0f);
-		glFlush();
+		shouldShowBezierCurve = !shouldShowBezierCurve;
+		affichage();
 		break;
 	case 'r':
 		resetContext();
@@ -119,10 +166,17 @@ int main(int argc, char **argv){
 	windowHeight = 800;
 	windowWidth = 600;
 
+	maxDistance = 100;
+
+	selectedControlPoint = NULL;
+
+	hasSelectedVertex = false;
+
 	shouldShowEdges = false;
 	shouldShowPoints = true;
+	shouldShowBezierCurve = false;
 
-	bezierControlPoints = vector<vertex>();
+	controlPoints = vector<vertex>();
 
 	afficherInformations();
 
