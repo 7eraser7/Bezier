@@ -6,6 +6,8 @@
 
 using namespace std;
 
+
+
 void affichage(){
 
     glClear(GL_COLOR_BUFFER_BIT);
