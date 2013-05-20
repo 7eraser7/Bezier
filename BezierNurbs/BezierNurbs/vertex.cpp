@@ -6,7 +6,7 @@ vertex::vertex()
 	y = 0;
 }
 
-vertex::vertex(double _x, double _y)
+vertex::vertex(int _x, int _y)
 {
 	x = _x;
 	y = _y;

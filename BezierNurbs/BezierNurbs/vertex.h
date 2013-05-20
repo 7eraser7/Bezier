@@ -4,11 +4,11 @@
 class vertex
 {
 public:
-	double x;
-	double y;
+	int x;
+	int y;
 
 	vertex();
-	vertex(double _x, double _y);
+	vertex(int _x, int _y);
 	vertex(const vertex & v);
 	~vertex();
 	vertex & operator=(const vertex & v);
