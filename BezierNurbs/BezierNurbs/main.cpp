@@ -153,9 +153,11 @@ void clavier(unsigned char touche,int x,int y){
 void afficherInformations(){
 	cout<<"\n\n\n\n\n";
 	cout<<"Liste des commandes :"<<endl;
-	cout<<"Creez des vertex avec le clique gauche"<<endl;
-	cout<<"Appuyez sur 'S' pour montrer/cacher les segments"<<endl;
-	cout<<"Appuyez sur 'P' pour montrer/cacher les points"<<endl;
+	cout<<"Creez des points de controle avec le clique gauche"<<endl;
+	cout<<"Appuyez sur 'S' pour montrer/cacher les segments issus des points de controle créés"<<endl;
+	cout<<"Appuyez sur 'P' pour montrer/cacher les points de controles"<<endl;
+	cout<<"Vous pouvez drag and drop un point de controle a un autre endroit avec le clic droit"<<endl;
+	cout<<"Appuyez sur 'B' pour montrer/cacher la courbe de Bezier associee aux points de controle"<<endl;
 	cout<<"Appuyez sur 'R' pour reinitialiser"<<endl;
 	cout<<"Appuyez sur 'Q' pour quitter"<<endl;
 }
